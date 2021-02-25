@@ -1,0 +1,29 @@
+---
+- hosts: Chat-App-using-Socket.io
+  sudo: yes
+
+
+  tasks:
+  - name: Install Packages
+    apt: name={{ item }} update_cache=yes state=latest
+    with_items:
+      - build-essential
+      - npm
+      - nodejs-legacy
+      - git
+     
+
+  - name: Git Clone Repo
+    git: repo=https://github.com/abkunal/Chat-App-using-Socket.io
+    register: git_finished
+
+  - name: Running NPM install
+    npm: path=Chat-App-using-Socket.io
+    register: npm_finished
+    when: git_finished.changed
+
+  - name: start application
+    sudo_user: ubuntu
+    command: npm app.js
+ 
+ 
